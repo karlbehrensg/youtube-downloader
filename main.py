@@ -39,17 +39,15 @@ def iterateFormat(video, lenght, position):
 
     return typeFormat
 
-
 def mimeType(video, lenght):
     typeDown = iterateFormat(video, lenght, 0)
-    formatDown = iterateFormat(video, lenght, 1)
 
     if typeDown == 'audio':
         typeDown = True
     else:
         typeDown = False
 
-    return typeDown, formatDown
+    return typeDown
 
 
 def download(video):
@@ -57,15 +55,19 @@ def download(video):
     videoTitle(video.title)
     lenStreams = len(video.streams)
     try:
-        audio, formatVideo = mimeType(video, lenStreams)
+        audio = mimeType(video, lenStreams)
+        clear()
+        videoTitle(video.title)
+        print('Downloading...')
         if audio == True:
-            video.streams.filter(only_audio=audio, subtype=formatVideo).first().download()
-        else:
-            print(video.streams.filter(only_audio=audio, subtype=formatVideo))
+            video.streams.get_audio_only().download()
+        else:    
+            video.streams.get_highest_resolution().download()
+        input('Done!')
     except Exception as e:
         print(e)
     
-    input('algo')
+    #input('algo')
 
 
 def videoTitle(title):
@@ -94,8 +96,7 @@ def videoMenu(video):
 
 def searchMenu():
     clear()
-    #url = str(input('Input url video from Youtube: '))
-    url = 'https://www.youtube.com/watch?v=KFUNJXRXSWE'
+    url = str(input('Input url video from Youtube: '))
     yt = YouTube(url)
     videoMenu(yt)
 
