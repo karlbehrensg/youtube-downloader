@@ -19,29 +19,51 @@ def clear():
     else: 
         _ = system('clear') 
 
-def mimeType(video, lenght):
-    typeDown = []
+
+def iterateFormat(video, lenght, position):
+    typeFormat = []
+
     for idx in range(lenght):
         data = video.streams[idx].mime_type.split('/')
-        typeDown.append(data[0])
-    typeDown = list(set(typeDown))
-    print(typeDown)
+        typeFormat.append(data[position])
+    typeFormat = list(set(typeFormat))
+    
+    print('Choose a type:')
+    
+    for idx in typeFormat:
+        print(idx)
+    typeFormat = input()
+
+    return typeFormat
+
+
+def mimeType(video, lenght):
+    typeDown = iterateFormat(video, lenght, 0)
+    formatDown = iterateFormat(video, lenght, 1)
+    
+    tipoFinal = "{}/{}".format(typeDown, formatDown)
+
+    return tipoFinal
+
 
 def download(video):
     clear()
     videoTitle(video.title)
     lenStreams = len(video.streams)
     try:
-        mimeType(video, lenStreams)
+        formatVideo = mimeType(video, lenStreams)
+        print(formatVideo)
     except Exception as e:
         print(e)
     
     input('algo')
 
+
 def videoTitle(title):
     print('-'*100)
     print(title)
     print('-'*100)
+
 
 def videoMenu(video):
     while True:
@@ -60,12 +82,14 @@ def videoMenu(video):
             print('Input need to be a number')
             input()
 
+
 def searchMenu():
     clear()
     #url = str(input('Input url video from Youtube: '))
     url = 'https://www.youtube.com/watch?v=KFUNJXRXSWE'
     yt = YouTube(url)
     videoMenu(yt)
+
 
 def run():
     while True:
