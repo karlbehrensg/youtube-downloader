@@ -23,6 +23,9 @@ def clear():
 def iterateFormat(video, lenght, position):
     typeFormat = []
 
+    clear()
+    videoTitle(video.title)
+
     for idx in range(lenght):
         data = video.streams[idx].mime_type.split('/')
         typeFormat.append(data[position])
@@ -40,10 +43,13 @@ def iterateFormat(video, lenght, position):
 def mimeType(video, lenght):
     typeDown = iterateFormat(video, lenght, 0)
     formatDown = iterateFormat(video, lenght, 1)
-    
-    tipoFinal = "{}/{}".format(typeDown, formatDown)
 
-    return tipoFinal
+    if typeDown == 'audio':
+        typeDown = True
+    else:
+        typeDown = False
+
+    return typeDown, formatDown
 
 
 def download(video):
@@ -51,8 +57,11 @@ def download(video):
     videoTitle(video.title)
     lenStreams = len(video.streams)
     try:
-        formatVideo = mimeType(video, lenStreams)
-        print(formatVideo)
+        audio, formatVideo = mimeType(video, lenStreams)
+        if audio == True:
+            video.streams.filter(only_audio=audio, subtype=formatVideo).first().download()
+        else:
+            print(video.streams.filter(only_audio=audio, subtype=formatVideo))
     except Exception as e:
         print(e)
     
