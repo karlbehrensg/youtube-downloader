@@ -19,12 +19,20 @@ def clear():
     else: 
         _ = system('clear') 
 
+def mimeType(video, lenght):
+    typeDown = []
+    for idx in range(lenght):
+        data = video.streams[idx].mime_type.split('/')
+        typeDown.append(data[0])
+    typeDown = list(set(typeDown))
+    print(typeDown)
+
 def download(video):
     clear()
     videoTitle(video.title)
+    lenStreams = len(video.streams)
     try:
-        for idx in range(len(video.streams)):
-            print(video.streams[idx])
+        mimeType(video, lenStreams)
     except Exception as e:
         print(e)
     
